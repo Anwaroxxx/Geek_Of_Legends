@@ -37,18 +37,13 @@ export default function MainMenu() {
   }, []);
 
   const handleNewRaid = () => {
-    // Skip manual party creation: auto-generate standard team
+    // Reset state for a fresh run
     clearParty();
-    createHero('Hero', 'warrior');
-    createHero('Mage', 'mage');
-    createHero('Ranger', 'archer');
     resetForBattle();
     resetDefeatedBosses();
-
-    const bosses: ('sauron' | 'chronos' | 'lilith')[] = ['sauron', 'chronos', 'lilith'];
-    const randomBoss = bosses[Math.floor(Math.random() * bosses.length)];
-    setCurrentBoss(randomBoss);
-    setPhase('battle');
+    
+    // Go to party creation so user can choose their heroes
+    setPhase('party-creation');
   };
 
   // Animated background canvas

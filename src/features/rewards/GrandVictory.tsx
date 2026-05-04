@@ -106,35 +106,35 @@ export default function GrandVictory() {
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, type: 'spring' }}
-              style={{ marginBottom: 40 }}
+              style={{ marginBottom: 20 }}
             >
               <h1 style={{
                 fontFamily: "'Cinzel Decorative', serif",
-                fontSize: 'clamp(2.5rem, 8vw, 5rem)',
+                fontSize: 'clamp(2rem, 6vw, 4rem)',
                 color: '#c5a059',
                 textShadow: '0 0 30px rgba(197,160,89,0.8), 0 0 60px rgba(197,160,89,0.4)',
                 margin: 0,
               }}>ALL BOSSES SLAIN</h1>
               <p style={{
                 fontFamily: "'Cinzel', serif",
-                fontSize: '1.2rem',
+                fontSize: '1rem',
                 color: '#8b7aa8',
-                letterSpacing: '0.4em',
+                letterSpacing: '0.3em',
                 textTransform: 'uppercase',
-                marginTop: 10,
+                marginTop: 6,
               }}>The Eclipse Raid is Conquered</p>
             </motion.div>
 
             {/* Heroes Celebration Section */}
             <motion.div
               animate={{
-                scale: stage === 'zoom' ? 1.5 : stage === 'congrats' ? 1.2 : 1,
-                y: stage === 'zoom' ? -50 : 0,
+                scale: stage === 'zoom' ? 1.2 : stage === 'congrats' ? 1.05 : 1,
+                y: stage === 'zoom' ? -20 : 0,
               }}
               transition={{ duration: 2, ease: "easeInOut" }}
               style={{
-                display: 'flex', gap: 60, justifyContent: 'center', alignItems: 'flex-end',
-                padding: '40px',
+                display: 'flex', gap: 40, justifyContent: 'center', alignItems: 'flex-end',
+                padding: '20px',
               }}
             >
               {heroes.map((hero, i) => {
@@ -159,7 +159,7 @@ export default function GrandVictory() {
                       style={{
                         position: 'absolute', bottom: 0, left: '50%',
                         transform: 'translateX(-50%)',
-                        width: 100, height: 40,
+                        width: 80, height: 30,
                         background: 'radial-gradient(ellipse, #c5a059 0%, transparent 70%)',
                         zIndex: -1,
                       }}
@@ -170,7 +170,7 @@ export default function GrandVictory() {
                         spriteSet={spriteSet}
                         animation={anim}
                         direction="right"
-                        scale={2}
+                        scale={1.8}
                         playing={true}
                         style={{ filter: 'drop-shadow(0 10px 20px rgba(197,160,89,0.4))' }}
                       />
@@ -181,10 +181,10 @@ export default function GrandVictory() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 2 + i * 0.2 }}
                       style={{
-                        marginTop: 10,
+                        marginTop: 6,
                         fontFamily: "'Cinzel', serif",
                         color: '#c5a059',
-                        fontSize: '0.9rem',
+                        fontSize: '0.8rem',
                         fontWeight: 'bold',
                         textShadow: '0 0 10px black',
                       }}
@@ -200,17 +200,17 @@ export default function GrandVictory() {
             <AnimatePresence>
               {stage === 'congrats' && (
                 <motion.div
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  style={{ marginTop: 60 }}
+                  style={{ marginTop: 30 }}
                 >
                   <h2 style={{
                     fontFamily: "'Cinzel', serif",
                     color: '#e2d9f3',
-                    fontSize: '1.5rem',
-                    marginBottom: 30,
-                    maxWidth: 600,
-                    margin: '0 auto 30px',
+                    fontSize: '1.2rem',
+                    marginBottom: 20,
+                    maxWidth: 500,
+                    margin: '0 auto 20px',
                   }}>
                     Congratulations, Legend! You have cleansed the realm of its darkest threats.
                   </h2>
@@ -220,12 +220,12 @@ export default function GrandVictory() {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleReturnToMenu}
                     style={{
-                      padding: '16px 48px',
+                      padding: '12px 40px',
                       background: 'linear-gradient(135deg, #c5a059 0%, #7c4f12 100%)',
                       border: 'none',
                       borderRadius: 8,
                       fontFamily: "'Cinzel', serif",
-                      fontSize: '1.1rem',
+                      fontSize: '1rem',
                       fontWeight: 700,
                       color: '#05030a',
                       cursor: 'pointer',

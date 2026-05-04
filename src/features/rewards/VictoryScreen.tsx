@@ -105,7 +105,7 @@ export default function VictoryScreen() {
         <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(197,160,89,0.5)' }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => { resetBattle(); setPhase('menu'); }}
+          onClick={() => { resetBattle(); setPhase('party-creation'); }}
           style={{
             padding: '14px 50px', background: 'linear-gradient(135deg, #7c4f12 0%, #c5a059 50%, #7c4f12 100%)',
             backgroundSize: '200% 100%', border: 'none', borderRadius: 6,
@@ -113,7 +113,7 @@ export default function VictoryScreen() {
             color: '#0a0800', letterSpacing: '0.12em', textTransform: 'uppercase',
             cursor: 'pointer', animation: 'shimmer 3s linear infinite',
             boxShadow: '0 0 25px rgba(197,160,89,0.3)', zIndex: 2,
-          }}>Return to Menu</motion.button>
+          }}>Continue to Next Boss</motion.button>
       )}
     </div>
   );
