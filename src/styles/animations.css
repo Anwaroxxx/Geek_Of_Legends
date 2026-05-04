@@ -1,0 +1,172 @@
+/* ============================================
+   ANIMATIONS - Keyframes & Motion
+   ============================================ */
+
+/* ─── Core Game Animations ─── */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.85; }
+  25%, 75%  { opacity: 0.95; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-6px) rotate(1deg); }
+  66%       { transform: translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(197,160,89,0.3); }
+  50%       { box-shadow: 0 0 30px rgba(197,160,89,0.7), 0 0 60px rgba(197,160,89,0.3); }
+}
+
+@keyframes pulse-glow-violet {
+  0%, 100% { box-shadow: 0 0 10px rgba(168,85,247,0.3); }
+  50%       { box-shadow: 0 0 30px rgba(168,85,247,0.7), 0 0 60px rgba(168,85,247,0.2); }
+}
+
+@keyframes pulse-glow-crimson {
+  0%, 100% { box-shadow: 0 0 10px rgba(212,51,51,0.3); }
+  50%       { box-shadow: 0 0 30px rgba(212,51,51,0.7), 0 0 60px rgba(212,51,51,0.2); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-6px) rotate(-1deg); }
+  20%, 40%, 60%, 80%      { transform: translateX(6px)  rotate(1deg); }
+}
+
+@keyframes damage-float {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
+}
+
+@keyframes crit-pop {
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+  50%  { transform: scale(1.4) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg) translateY(-60px); opacity: 0; }
+}
+
+@keyframes boss-intro {
+  0%   { transform: scale(0.6) translateY(40px); opacity: 0; filter: brightness(3); }
+  60%  { transform: scale(1.05) translateY(-5px); opacity: 1; filter: brightness(1.5); }
+  100% { transform: scale(1) translateY(0); opacity: 1; filter: brightness(1); }
+}
+
+@keyframes health-drain {
+  0%   { width: var(--prev-hp); }
+  100% { width: var(--curr-hp); }
+}
+
+@keyframes ember {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-120px) translateX(var(--drift)) scale(0); opacity: 0; }
+}
+
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(60px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-80px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(80px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes vignette-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.7; }
+}
+
+@keyframes title-glow-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 10px rgba(197,160,89,0.8),
+      0 0 30px rgba(197,160,89,0.4),
+      0 0 60px rgba(197,160,89,0.2);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba(197,160,89,1),
+      0 0 50px rgba(197,160,89,0.6),
+      0 0 100px rgba(197,160,89,0.3);
+  }
+}
+
+@keyframes rune-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes bar-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-right-color: transparent; }
+  50%       { border-right-color: var(--col-gold); }
+}
+
+/* ─── Animation Utility Classes ─── */
+.anim-float       { animation: float 3s ease-in-out infinite; }
+.anim-float-slow  { animation: floatSlow 5s ease-in-out infinite; }
+.anim-flicker     { animation: flicker 2s ease-in-out infinite; }
+.anim-pulse-gold  { animation: pulse-glow 2s ease-in-out infinite; }
+.anim-pulse-violet{ animation: pulse-glow-violet 2s ease-in-out infinite; }
+.anim-pulse-crimson{animation: pulse-glow-crimson 2s ease-in-out infinite; }
+.anim-spin        { animation: spin-slow 8s linear infinite; }
+.anim-spin-rev    { animation: spin-reverse 12s linear infinite; }
+.anim-shake       { animation: shake 0.6s ease-in-out; }
+.anim-boss-intro  { animation: boss-intro 1.2s cubic-bezier(0.17,0.67,0.35,1) forwards; }
+.anim-fade-in     { animation: fade-in 0.4s ease-out forwards; }
+.anim-slide-up    { animation: slide-in-bottom 0.5s ease-out forwards; }
+.anim-slide-left  { animation: slide-in-left 0.5s ease-out forwards; }
+.anim-slide-right { animation: slide-in-right 0.5s ease-out forwards; }
+.anim-scale-in    { animation: scale-in 0.4s cubic-bezier(0.17,0.67,0.35,1) forwards; }
+.anim-title-glow  { animation: title-glow-pulse 2.5s ease-in-out infinite; }
