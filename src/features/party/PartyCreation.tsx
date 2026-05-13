@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/gameStore';
 import { useHeroStore } from '../../store/heroStore';
-import type { HeroClass } from '../../types/Game';
+import type { HeroClass, BossId } from '../../types/Game';
 import { HERO_COLORS } from '../../constants/balance';
 import SpriteAnimator from '../../rendering/animation/SpriteAnimator';
 import { CHARACTER_SPRITES } from '../../rendering/animation/SpriteConfig';
@@ -73,11 +73,11 @@ export default function PartyCreation() {
       width: '100%', height: '100%',
       background: 'linear-gradient(180deg, #05030a 0%, #0d0a18 50%, #120a22 100%)',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      padding: '20px 20px', overflow: 'hidden',
+      padding: '10px 20px', overflow: 'hidden',
     }}>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
-        style={{ textAlign: 'center', marginBottom: 20 }}>
+        style={{ textAlign: 'center', marginBottom: 12 }}>
         <h1 style={{
           fontFamily: "'Cinzel Decorative', serif",
           fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
@@ -92,7 +92,7 @@ export default function PartyCreation() {
       </motion.div>
 
       {/* Hero selection or Boss selection */}
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20, maxWidth: 900 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 12, maxWidth: 900 }}>
         {!isPartyFull ? (
           // HERO CLASS CARDS
           ALL_CLASSES.map((cls, idx) => {
@@ -111,7 +111,7 @@ export default function PartyCreation() {
                 whileHover={{ y: -4, boxShadow: `0 0 30px ${HERO_COLORS[cls].glow}` }}
                 onClick={() => { setSelectedClass(cls); setError(''); }}
                 style={{
-                  width: 250, padding: '20px 20px 16px',
+                  width: 220, padding: '16px 16px 12px',
                   background: isSelected
                     ? `linear-gradient(135deg, ${HERO_COLORS[cls].secondary} 0%, #120e22 100%)`
                     : 'linear-gradient(135deg, #120e22 0%, #0f0a1e 100%)',
@@ -180,7 +180,7 @@ export default function PartyCreation() {
                 whileHover={!isDefeated ? { y: -4, boxShadow: `0 0 30px ${data.color}44` } : {}}
                 onClick={() => !isDefeated && setSelectedBossId(bid)}
                 style={{
-                  width: 250, padding: '24px 20px',
+                  width: 220, padding: '18px 16px',
                   background: isSelected
                     ? `linear-gradient(135deg, ${data.color}22 0%, #120e22 100%)`
                     : 'linear-gradient(135deg, #120e22 0%, #0f0a1e 100%)',
@@ -255,13 +255,13 @@ export default function PartyCreation() {
       {error && <p style={{ color: '#ef4444', fontSize: '0.8rem', marginBottom: 12 }}>{error}</p>}
 
       {/* Current Party with sprites */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
         {heroes.map((hero) => {
           const spriteSet = CHARACTER_SPRITES[hero.heroClass];
           return (
             <motion.div key={hero.id} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} layout
               style={{
-                width: 160, padding: 12,
+                width: 130, padding: 8,
                 background: 'linear-gradient(135deg, #120e22 0%, #0f0a1e 100%)',
                 border: `1px solid ${HERO_COLORS[hero.heroClass].primary}55`,
                 borderRadius: 10, textAlign: 'center', position: 'relative',
@@ -290,7 +290,7 @@ export default function PartyCreation() {
 
         {!isPartyFull && Array.from({ length: 3 - heroes.length }).map((_, i) => (
           <div key={`empty-${i}`} style={{
-            width: 160, height: 110, border: '1px dashed #2a2040',
+            width: 130, height: 90, border: '1px dashed #2a2040',
             borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#4a3d6b', fontSize: '0.75rem',
           }}>Empty Slot</div>

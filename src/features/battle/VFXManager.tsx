@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export type VFXType = 'slash' | 'hit' | 'heal' | 'buff' | 'fire' | 'ice' | 'lightning';

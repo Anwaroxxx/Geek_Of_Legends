@@ -4,12 +4,10 @@ interface SpeechBubbleProps {
   text: string;
   x: number;
   y: number;
-  onComplete?: () => void;
-  duration?: number;
   color?: string;
 }
 
-export default function SpeechBubble({ text, x, y, onComplete, duration = 3000, color = '#fff' }: SpeechBubbleProps) {
+export default function SpeechBubble({ text, x, y, color = '#fff' }: SpeechBubbleProps) {
   return (
     <AnimatePresence>
       <motion.div

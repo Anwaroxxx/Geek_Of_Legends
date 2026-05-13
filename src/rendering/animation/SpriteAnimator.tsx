@@ -2,7 +2,7 @@
 // SPRITE ANIMATOR — CSS spritesheet animation
 // ============================================
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { SpriteSheetConfig, SpriteDirection, SpriteAnimation, CharacterSpriteSet } from './SpriteConfig';
 
 interface SpriteAnimatorProps {

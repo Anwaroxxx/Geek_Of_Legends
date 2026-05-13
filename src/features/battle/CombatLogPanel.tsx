@@ -62,7 +62,7 @@ export default function CombatLogPanel() {
           backdropFilter: 'blur(4px)',
         }}
       >
-        {lastEntries.map((entry, i) => (
+        {lastEntries.map((entry) => (
           <motion.div
             key={entry.id}
             initial={{ opacity: 0, x: -10 }}

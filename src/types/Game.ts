@@ -1,7 +1,3 @@
-// ============================================
-// CORE TYPES — Geek of Legends: Eclipse Raid
-// ============================================
-
 export type HeroClass = 'warrior' | 'mage' | 'archer';
 export type BossId    = 'sauron' | 'chronos' | 'lilith';
 export type GamePhase = 'menu' | 'party-creation' | 'stat-allocation' | 'battle' | 'riddle' | 'loot' | 'victory' | 'death' | 'grand-victory';
@@ -107,7 +103,7 @@ export interface CombatLog {
 export interface FloatingText {
   id: string;
   text: string;
-  type: 'normal' | 'crit' | 'heal' | 'poison' | 'miss';
+  type: 'normal' | 'crit' | 'heal' | 'poison' | 'miss' | 'system';
   x: number;
   y: number;
 }

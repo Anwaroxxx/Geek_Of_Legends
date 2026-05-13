@@ -10,8 +10,8 @@ import '../../styles/animations.css';
 import '../../styles/theme.css';
 
 export default function MainMenu() {
-  const { setPhase, setCurrentBoss, resetDefeatedBosses } = useGameStore();
-  const { clearParty, createHero, resetForBattle } = useHeroStore();
+  const { setPhase, resetDefeatedBosses } = useGameStore();
+  const { clearParty, resetForBattle } = useHeroStore();
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
   const [showSettings, setShowSettings] = useState(false);

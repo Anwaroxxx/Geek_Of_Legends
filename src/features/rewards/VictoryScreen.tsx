@@ -58,7 +58,7 @@ export default function VictoryScreen() {
       }} />
 
       <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }} style={{ textAlign: 'center', marginBottom: 30, zIndex: 2 }}>
+        transition={{ duration: 0.8 }} style={{ textAlign: 'center', marginBottom: 15, zIndex: 2 }}>
         <h1 style={{
           fontFamily: "'Cinzel Decorative', serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)',
           fontWeight: 900, color: '#c5a059',
@@ -70,7 +70,7 @@ export default function VictoryScreen() {
 
       {revealStep >= 1 && (
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-          style={{ display: 'flex', gap: 24, marginBottom: 24, zIndex: 2 }}>
+          style={{ display: 'flex', gap: 20, marginBottom: 15, zIndex: 2 }}>
           <div style={{ padding: '12px 24px', background: 'rgba(13,10,24,0.9)', border: '1px solid rgba(197,160,89,0.3)', borderRadius: 8, textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem' }}>💰</p>
             <p style={{ fontFamily: "'Cinzel', serif", color: '#c5a059', fontSize: '1.2rem', fontWeight: 700 }}>{goldReward}</p>
@@ -86,7 +86,7 @@ export default function VictoryScreen() {
 
       {revealStep >= 2 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 500, marginBottom: 30, zIndex: 2 }}>
+          style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 500, marginBottom: 20, zIndex: 2 }}>
           {loot.map((item, i) => (
             <motion.div key={item.name} initial={{ opacity: 0, scale: 0.7, rotateY: 90 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }} transition={{ delay: i * 0.3 }}

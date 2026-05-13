@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion';
 import { 
   Sword, Shield, Zap, Flame, Snowflake, 
-  Orbit, Skull, ArrowUpRight, Crosshair, 
+  Orbit, Crosshair, 
   Droplets, CloudRain, Wind 
 } from 'lucide-react';
 import type { HeroData, Skill } from '../../types/Game';

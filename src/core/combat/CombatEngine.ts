@@ -132,8 +132,6 @@ export function resolveHeroAttack(
     damage = applyCrit(damage, hero.stats.critMultiplier);
   }
 
-  // Boss phase enrage
-  const currentPhase = boss.phases[boss.currentPhase];
   // Defense buff from boss phase is handled differently
 
   const statusApplied = !!(skill.statusEffect && Math.random() < 0.7);

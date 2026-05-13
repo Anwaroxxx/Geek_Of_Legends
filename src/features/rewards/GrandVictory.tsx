@@ -133,8 +133,8 @@ export default function GrandVictory() {
               }}
               transition={{ duration: 2, ease: "easeInOut" }}
               style={{
-                display: 'flex', gap: 40, justifyContent: 'center', alignItems: 'flex-end',
-                padding: '20px',
+                display: 'flex', gap: 60, justifyContent: 'center', alignItems: 'flex-end',
+                padding: '10px',
               }}
             >
               {heroes.map((hero, i) => {
@@ -170,7 +170,7 @@ export default function GrandVictory() {
                         spriteSet={spriteSet}
                         animation={anim}
                         direction="right"
-                        scale={1.8}
+                        scale={hero.heroClass === 'archer' ? 2.5 : 0.85}
                         playing={true}
                         style={{ filter: 'drop-shadow(0 10px 20px rgba(197,160,89,0.4))' }}
                       />
@@ -207,10 +207,10 @@ export default function GrandVictory() {
                   <h2 style={{
                     fontFamily: "'Cinzel', serif",
                     color: '#e2d9f3',
-                    fontSize: '1.2rem',
-                    marginBottom: 20,
+                    fontSize: '1rem',
+                    marginBottom: 15,
                     maxWidth: 500,
-                    margin: '0 auto 20px',
+                    margin: '0 auto 15px',
                   }}>
                     Congratulations, Legend! You have cleansed the realm of its darkest threats.
                   </h2>

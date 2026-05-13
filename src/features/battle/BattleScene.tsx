@@ -1,15 +1,14 @@
 // ============================================
 // BATTLE SCENE — Main combat screen with real sprites
 // ============================================
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/gameStore';
 import { useHeroStore } from '../../store/heroStore';
 import { useBattleStore } from '../../store/battleStore';
 import {
   resolveHeroAttack, resolveBossAttack, pickBossSkill,
-  shouldAdvancePhase, shouldTriggerRiddle, processDotEffects,
-  tickStatusEffects, isIncapacitated, getArenaHazard,
+  shouldAdvancePhase, getArenaHazard,
 } from '../../core/combat/CombatEngine';
 import BattleHUD from './BattleHUD';
 import SkillBar from './SkillBar';
@@ -19,19 +18,19 @@ import FloatingDamage from './FloatingDamage';
 import CombatLogPanel from './CombatLogPanel';
 import SpriteAnimator from '../../rendering/animation/SpriteAnimator';
 import { CHARACTER_SPRITES } from '../../rendering/animation/SpriteConfig';
-import type { Skill, HeroData } from '../../types/Game';
+import type { Skill } from '../../types/Game';
 import type { SpriteAnimation } from '../../rendering/animation/SpriteConfig';
 import { BOSS_COLORS } from '../../constants/balance';
 import VFXManager, { useVFX } from './VFXManager';
 import SpeechBubble from './SpeechBubble';
 
 export default function BattleScene() {
-  const { currentBossId, setPhase, markBossDefeated, defeatedBosses } = useGameStore();
+  const { currentBossId, setPhase, markBossDefeated } = useGameStore();
   const heroes = useHeroStore((s) => s.heroes);
-  const { damageHero, healHero, spendMp, addRage, spendArrow, putSkillOnCooldown, tickCooldowns } = useHeroStore();
+  const { damageHero, spendMp, addRage, spendArrow, putSkillOnCooldown, tickCooldowns } = useHeroStore();
   const {
     boss, initBoss, damageBoss, healBoss,
-    isPlayerTurn, isBossTurn, isAnimating,
+    isPlayerTurn, isAnimating,
     setPlayerTurn, setBossTurn, setAnimating,
     setCurrentTurnHero, currentTurnHeroId, turnCount,
     advanceTurn, addCombatLog, addFloatingText, floatingTexts,
@@ -40,7 +39,6 @@ export default function BattleScene() {
   } = useBattleStore();
 
   const [showBossIntro, setShowBossIntro] = useState(true);
-  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [shaking, setShaking] = useState(false);
   const [bossAnim, setBossAnim] = useState<SpriteAnimation>('idle');
   const [heroAnims, setHeroAnims] = useState<Record<string, SpriteAnimation>>({});
@@ -63,7 +61,6 @@ export default function BattleScene() {
       const alive = heroes.filter((h) => h.isAlive);
       if (alive.length > 0) {
         setCurrentTurnHero(alive[0].id);
-        setCurrentHeroIndex(0);
         setPlayerTurn(true);
       }
       // Init all hero anims to idle
@@ -229,7 +226,6 @@ export default function BattleScene() {
         const nextIndex = currentIndex + 1;
 
         if (nextIndex < aliveHeroes.length && nextIndex > 0) {
-          setCurrentHeroIndex(nextIndex);
           setCurrentTurnHero(aliveHeroes[nextIndex].id);
         } else {
           setPlayerTurn(false);
@@ -263,7 +259,6 @@ export default function BattleScene() {
       const nextIndex = currentIndex + 1;
 
       if (nextIndex < aliveHeroes.length && nextIndex > 0) {
-        setCurrentHeroIndex(nextIndex);
         setCurrentTurnHero(aliveHeroes[nextIndex].id);
       } else {
         setPlayerTurn(false);
@@ -368,7 +363,6 @@ export default function BattleScene() {
         tickCooldowns();
         const newAlive = useHeroStore.getState().heroes.filter((h) => h.isAlive);
         if (newAlive.length > 0) {
-          setCurrentHeroIndex(0);
           setCurrentTurnHero(newAlive[0].id);
         }
       }, 700);
@@ -535,7 +529,7 @@ export default function BattleScene() {
         position: 'absolute', top: '42%', left: '15%', transform: 'translateY(-50%)',
         display: 'flex', flexDirection: 'column', gap: 10, zIndex: 5, alignItems: 'center',
       }}>
-        {heroes.map((hero, index) => {
+        {heroes.map((hero) => {
           const spriteSet = CHARACTER_SPRITES[hero.heroClass];
           const anim = heroAnims[hero.id] || 'idle';
           const isActive = hero.id === currentTurnHeroId && isPlayerTurn;
@@ -622,7 +616,7 @@ export default function BattleScene() {
 
       {/* Bottom HUD */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 50 }}>
-        <BattleHUD heroes={heroes} currentHeroId={currentTurnHeroId} turnCount={turnCount} isPlayerTurn={isPlayerTurn} />
+        <BattleHUD heroes={heroes} currentHeroId={currentTurnHeroId} isPlayerTurn={isPlayerTurn} />
         {isPlayerTurn && currentTurnHeroId && heroes.find((h) => h.id === currentTurnHeroId) && (
           <SkillBar
             hero={heroes.find((h) => h.id === currentTurnHeroId)!}

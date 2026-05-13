@@ -6,8 +6,8 @@ interface GameLoopOptions {
   enabled?: boolean;
 }
 
-export const useGameLoop = ({ onTick, fps = 60, enabled = true }: GameLoop = {}) => {
-  const requestRef = useRef<number>();
+export const useGameLoop = ({ onTick, fps = 60, enabled = true }: GameLoopOptions = {}) => {
+  const requestRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const frameCountRef = useRef<number>(0);
   const fpsTimeRef = useRef<number>(0);

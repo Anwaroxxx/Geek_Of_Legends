@@ -1,31 +1,13 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-interface InputState {
-  keys: Set<string>;
-  mouse: {
-    x: number;
-    y: number;
-    isDown: boolean;
-    isRightDown: boolean;
-    isMiddleDown: boolean;
-  };
-  touch: {
-    x: number;
-    y: number;
-    isDown: boolean;
-  };
-}
-
 interface InputOptions {
   enabled?: boolean;
-  debounceMs?: number;
 }
 
-export const useInput = ({ enabled = true, debounceMs = 50 }: InputOptions = {}) => {
+export const useInput = ({ enabled = true }: InputOptions = {}) => {
   const keysRef = useRef<Set<string>>(new Set());
   const mouseRef = useRef({ x: 0, y: 0, isDown: false, isRightDown: false, isMiddleDown: false });
   const touchRef = useRef({ x: 0, y: 0, isDown: false });
-  const debounceTimerRef = useRef<number>();
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (!enabled) return;
@@ -49,7 +31,7 @@ export const useInput = ({ enabled = true, debounceMs = 50 }: InputOptions = {})
     mouseRef.current.y = event.clientY;
   }, [enabled]);
 
-  const handleMouseUp = useCallback((event: MouseEvent) => {
+  const handleMouseUp = useCallback(() => {
     if (!enabled) return;
 
     mouseRef.current.isDown = false;

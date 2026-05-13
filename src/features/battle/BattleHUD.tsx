@@ -4,14 +4,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { HeroData } from '../../types/Game';
-import { HERO_COLORS, STATUS_ICONS } from '../../constants/balance';
 import SpriteAnimator from '../../rendering/animation/SpriteAnimator';
 import { CHARACTER_SPRITES } from '../../rendering/animation/SpriteConfig';
 
 interface BattleHUDProps {
   heroes: HeroData[];
   currentHeroId: string | null;
-  turnCount: number;
   isPlayerTurn: boolean;
 }
 
@@ -27,7 +25,7 @@ const CLASS_COLORS: Record<string, string> = {
   archer: '#10b981',
 };
 
-export default function BattleHUD({ heroes, currentHeroId, turnCount, isPlayerTurn }: BattleHUDProps) {
+export default function BattleHUD({ heroes, currentHeroId, isPlayerTurn }: BattleHUDProps) {
   return (
     <div style={{
       display: 'flex', justifyContent: 'center', gap: 8,
