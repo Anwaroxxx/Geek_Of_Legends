@@ -41,49 +41,49 @@ export interface CharacterSpriteSet {
 
 export const HERO_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/hero/hero_idle.png',
+    src: '/assets/hero/hero_idle.png',
     frameWidth: 192, frameHeight: 192,
     columns: 2, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 2, fps: 3,
   },
   walk: {
-    src: '/src/assets/hero/hero_walk.png',
+    src: '/assets/hero/hero_walk.png',
     frameWidth: 192, frameHeight: 192,
     columns: 8, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 8, fps: 8,
   },
   attack: {
-    src: '/src/assets/hero/hero_slash.png',
+    src: '/assets/hero/hero_slash.png',
     frameWidth: 192, frameHeight: 192,
     columns: 5, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 5, fps: 10,
   },
   cast: {
-    src: '/src/assets/hero/hero_cast.png',
+    src: '/assets/hero/hero_cast.png',
     frameWidth: 64, frameHeight: 64,
     columns: 6, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 6, fps: 8,
   },
   shoot: {
-    src: '/src/assets/hero/hero_shoot.png',
+    src: '/assets/hero/hero_shoot.png',
     frameWidth: 64, frameHeight: 64,
     columns: 12, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 12, fps: 10,
   },
   hurt: {
-    src: '/src/assets/hero/hero_hurt.png',
+    src: '/assets/hero/hero_hurt.png',
     frameWidth: 192, frameHeight: 192,
     columns: 5, rows: 1,
     directionRow: { up: 0, left: 0, down: 0, right: 0 },
     frameCount: 5, fps: 6,
   },
   thrust: {
-    src: '/src/assets/hero/hero_thrust.png',
+    src: '/assets/hero/hero_thrust.png',
     frameWidth: 64, frameHeight: 64,
     columns: 7, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
@@ -94,42 +94,42 @@ export const HERO_SPRITES: CharacterSpriteSet = {
 // ─── MAGE HERO ───
 export const MAGE_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/mage-hero/mage-hero_idle.png',
+    src: '/assets/mage-hero/mage-hero_idle.png',
     frameWidth: 192, frameHeight: 192,
     columns: 2, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 2, fps: 3,
   },
   walk: {
-    src: '/src/assets/mage-hero/mage-hero_walk.png',
+    src: '/assets/mage-hero/mage-hero_walk.png',
     frameWidth: 192, frameHeight: 192,
     columns: 8, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 8, fps: 8,
   },
   attack: {
-    src: '/src/assets/mage-hero/mage-hero_slash.png',
+    src: '/assets/mage-hero/mage-hero_slash.png',
     frameWidth: 192, frameHeight: 192,
     columns: 5, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 5, fps: 10,
   },
   cast: {
-    src: '/src/assets/mage-hero/mage-hero_cast.png',
+    src: '/assets/mage-hero/mage-hero_cast.png',
     frameWidth: 192, frameHeight: 192,
     columns: 6, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 6, fps: 8,
   },
   shoot: {
-    src: '/src/assets/mage-hero/mage-hero_shoot.png',
+    src: '/assets/mage-hero/mage-hero_shoot.png',
     frameWidth: 192, frameHeight: 192,
     columns: 12, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 12, fps: 10,
   },
   hurt: {
-    src: '/src/assets/mage-hero/mage-hero_hurt.png',
+    src: '/assets/mage-hero/mage-hero_hurt.png',
     frameWidth: 192, frameHeight: 192,
     columns: 5, rows: 1,
     directionRow: { up: 0, left: 0, down: 0, right: 0 },
@@ -140,21 +140,21 @@ export const MAGE_SPRITES: CharacterSpriteSet = {
 // ─── ARCHER HERO (Universal LPC) ───
 export const ARCHER_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/archer-hero/archer-hero_universal.png',
+    src: '/assets/archer-hero/archer-hero_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     directionRow: { up: 10, left: 9, down: 8, right: 11 },
     frameCount: 1, fps: 2,
   },
   walk: {
-    src: '/src/assets/archer-hero/archer-hero_universal.png',
+    src: '/assets/archer-hero/archer-hero_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     directionRow: { up: 10, left: 9, down: 8, right: 11 },
     frameCount: 9, fps: 8,
   },
   attack: {
-    src: '/src/assets/archer-hero/archer-hero_universal.png',
+    src: '/assets/archer-hero/archer-hero_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     // bow shoot rows: up=16, left=17, down=18, right=19
@@ -162,14 +162,14 @@ export const ARCHER_SPRITES: CharacterSpriteSet = {
     frameCount: 13, fps: 12,
   },
   shoot: {
-    src: '/src/assets/archer-hero/archer-hero_universal.png',
+    src: '/assets/archer-hero/archer-hero_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     directionRow: { up: 16, left: 17, down: 18, right: 19 },
     frameCount: 13, fps: 12,
   },
   hurt: {
-    src: '/src/assets/archer-hero/archer-hero_universal.png',
+    src: '/assets/archer-hero/archer-hero_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     directionRow: { up: 20, left: 20, down: 20, right: 20 },
@@ -187,42 +187,42 @@ export const ARCHER_SPRITES: CharacterSpriteSet = {
 
 export const MAGICIEN_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_idle.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_idle.png',
     frameWidth: 64, frameHeight: 64,
     columns: 2, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 2, fps: 3,
   },
   walk: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_walk.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_walk.png',
     frameWidth: 64, frameHeight: 64,
     columns: 8, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 8, fps: 8,
   },
   attack: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_slash.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_slash.png',
     frameWidth: 64, frameHeight: 64,
     columns: 5, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 5, fps: 10,
   },
   cast: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_cast.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_cast.png',
     frameWidth: 64, frameHeight: 64,
     columns: 6, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 6, fps: 8,
   },
   shoot: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_shoot.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_shoot.png',
     frameWidth: 64, frameHeight: 64,
     columns: 12, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 12, fps: 10,
   },
   hurt: {
-    src: '/src/assets/magicien_monster_1/magicien_monster_1_hurt.png',
+    src: '/assets/magicien_monster_1/magicien_monster_1_hurt.png',
     frameWidth: 64, frameHeight: 64,
     columns: 5, rows: 1,
     directionRow: { up: 0, left: 0, down: 0, right: 0 },
@@ -240,35 +240,35 @@ export const MAGICIEN_SPRITES: CharacterSpriteSet = {
 
 export const MONSTER2_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/monster-2/monster-2_idle.png',
+    src: '/assets/monster-2/monster-2_idle.png',
     frameWidth: 64, frameHeight: 64,
     columns: 2, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 2, fps: 3,
   },
   walk: {
-    src: '/src/assets/monster-2/monster-2_walk.png',
+    src: '/assets/monster-2/monster-2_walk.png',
     frameWidth: 64, frameHeight: 64,
     columns: 8, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 8, fps: 8,
   },
   attack: {
-    src: '/src/assets/monster-2/monster-2_slash.png',
+    src: '/assets/monster-2/monster-2_slash.png',
     frameWidth: 192, frameHeight: 192,
     columns: 5, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 5, fps: 10,
   },
   cast: {
-    src: '/src/assets/monster-2/monster-2_cast.png',
+    src: '/assets/monster-2/monster-2_cast.png',
     frameWidth: 64, frameHeight: 64,
     columns: 6, rows: 4,
     directionRow: { up: 0, left: 1, down: 2, right: 3 },
     frameCount: 6, fps: 8,
   },
   hurt: {
-    src: '/src/assets/monster-2/monster-2_hurt.png',
+    src: '/assets/monster-2/monster-2_hurt.png',
     frameWidth: 64, frameHeight: 64,
     columns: 5, rows: 1,
     directionRow: { up: 0, left: 0, down: 0, right: 0 },
@@ -281,7 +281,7 @@ export const MONSTER2_SPRITES: CharacterSpriteSet = {
 // Standard LPC universal: 64x64 frames, 13 cols, 21 rows
 export const MONSTER1_SPRITES: CharacterSpriteSet = {
   idle: {
-    src: '/src/assets/monster-1/monster-1_universal.png',
+    src: '/assets/monster-1/monster-1_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     // In universal LPC: row 0 = spellcast up, rows 8-9 = walk, etc.
@@ -291,14 +291,14 @@ export const MONSTER1_SPRITES: CharacterSpriteSet = {
     frameCount: 1, fps: 2,
   },
   walk: {
-    src: '/src/assets/monster-1/monster-1_universal.png',
+    src: '/assets/monster-1/monster-1_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     directionRow: { up: 10, left: 9, down: 8, right: 11 },
     frameCount: 9, fps: 8,
   },
   attack: {
-    src: '/src/assets/monster-1/monster-1_universal.png',
+    src: '/assets/monster-1/monster-1_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     // slash rows: down=12, left=13, right=15, up=14
@@ -306,7 +306,7 @@ export const MONSTER1_SPRITES: CharacterSpriteSet = {
     frameCount: 6, fps: 10,
   },
   cast: {
-    src: '/src/assets/monster-1/monster-1_universal.png',
+    src: '/assets/monster-1/monster-1_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     // spellcast: up=0, left=1, down=2, right=3
@@ -314,7 +314,7 @@ export const MONSTER1_SPRITES: CharacterSpriteSet = {
     frameCount: 7, fps: 8,
   },
   hurt: {
-    src: '/src/assets/monster-1/monster-1_universal.png',
+    src: '/assets/monster-1/monster-1_universal.png',
     frameWidth: 64, frameHeight: 64,
     columns: 13, rows: 21,
     // hurt/death row = 20
