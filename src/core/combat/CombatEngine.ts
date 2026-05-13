@@ -1,11 +1,6 @@
-// ============================================
-// COMBAT ENGINE — Turn-based combat logic
-// ============================================
+
 import type { HeroData, BossData, Skill, StatusEffectInstance, FloatingText } from '../../types/Game';
 
-/**
- * Calculate damage after defense/resist
- */
 export function calculateDamage(
   baseDamage: number,
   attackerAttack: number,
@@ -238,6 +233,44 @@ export function shouldAdvancePhase(boss: BossData): boolean {
 export function shouldTriggerRiddle(boss: BossData): boolean {
   const hpPercent = boss.stats.hp / boss.stats.maxHp;
   return hpPercent <= 0.2 && !boss.riddleTriggered;
+}
+
+/**
+ * Get arena hazard effect
+ */
+export function getArenaHazard(arena: string, turnCount: number): { 
+  message: string; 
+  damage: number; 
+  type: 'damage' | 'system';
+  target: 'all' | 'random' | 'none';
+} | null {
+  if (turnCount % 3 !== 0 || turnCount === 0) return null;
+
+  switch (arena) {
+    case 'lava_temple':
+      return { 
+        message: 'Lava surges! Heroes take heat damage.', 
+        damage: 20, 
+        type: 'damage',
+        target: 'all' 
+      };
+    case 'clock_temple':
+      return { 
+        message: 'Time distorts! Turn order shuffled.', 
+        damage: 0, 
+        type: 'system',
+        target: 'none' 
+      };
+    case 'void_palace':
+      return { 
+        message: 'Shadows drain your energy!', 
+        damage: 15, 
+        type: 'damage',
+        target: 'all' 
+      };
+    default:
+      return null;
+  }
 }
 
 /**

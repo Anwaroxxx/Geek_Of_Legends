@@ -2,6 +2,7 @@
 // SPRITE ANIMATOR — CSS spritesheet animation
 // ============================================
 import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { SpriteSheetConfig, SpriteDirection, SpriteAnimation, CharacterSpriteSet } from './SpriteConfig';
 
 interface SpriteAnimatorProps {
@@ -16,6 +17,8 @@ interface SpriteAnimatorProps {
   className?: string;
   tint?: string; // CSS filter for tinting
   flipX?: boolean;
+  isHurt?: boolean;
+  isAttacking?: boolean;
 }
 
 export default function SpriteAnimator({
@@ -30,6 +33,8 @@ export default function SpriteAnimator({
   className,
   tint,
   flipX = false,
+  isHurt = false,
+  isAttacking = false,
 }: SpriteAnimatorProps) {
   const [frame, setFrame] = useState(0);
   const intervalRef = useRef<number | null>(null);
@@ -59,6 +64,9 @@ export default function SpriteAnimator({
       return;
     }
 
+    // Hit-stop logic: pause animation briefly if hurt
+    if (isHurt && animation !== 'hurt') return;
+
     const ms = 1000 / config.fps;
     intervalRef.current = window.setInterval(() => {
       setFrame((prev) => {
@@ -78,7 +86,7 @@ export default function SpriteAnimator({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [playing, config.fps, config.frameCount, loop, onComplete]);
+  }, [playing, config.fps, config.frameCount, loop, onComplete, isHurt, animation]);
 
   // Reset frame when animation changes
   useEffect(() => {
@@ -92,8 +100,14 @@ export default function SpriteAnimator({
   const displayHeight = config.frameHeight * scale;
 
   return (
-    <div
+    <motion.div
       className={className}
+      animate={{
+        scaleX: isAttacking ? 1.2 : flipX ? -1 : 1,
+        scaleY: isHurt ? 0.9 : 1,
+        filter: isHurt ? 'brightness(3) saturate(0) contrast(2)' : tint || 'none',
+      }}
+      transition={{ duration: 0.1 }}
       style={{
         width: displayWidth,
         height: displayHeight,
@@ -102,8 +116,6 @@ export default function SpriteAnimator({
         backgroundSize: `${config.columns * config.frameWidth * scale}px ${config.rows * config.frameHeight * scale}px`,
         backgroundRepeat: 'no-repeat',
         imageRendering: 'pixelated',
-        transform: flipX ? 'scaleX(-1)' : undefined,
-        filter: tint || undefined,
         ...style,
       }}
     />

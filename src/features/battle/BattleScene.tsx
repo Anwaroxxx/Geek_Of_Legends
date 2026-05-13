@@ -9,7 +9,7 @@ import { useBattleStore } from '../../store/battleStore';
 import {
   resolveHeroAttack, resolveBossAttack, pickBossSkill,
   shouldAdvancePhase, shouldTriggerRiddle, processDotEffects,
-  tickStatusEffects, isIncapacitated,
+  tickStatusEffects, isIncapacitated, getArenaHazard,
 } from '../../core/combat/CombatEngine';
 import BattleHUD from './BattleHUD';
 import SkillBar from './SkillBar';
@@ -22,6 +22,8 @@ import { CHARACTER_SPRITES } from '../../rendering/animation/SpriteConfig';
 import type { Skill, HeroData } from '../../types/Game';
 import type { SpriteAnimation } from '../../rendering/animation/SpriteConfig';
 import { BOSS_COLORS } from '../../constants/balance';
+import VFXManager, { useVFX } from './VFXManager';
+import SpeechBubble from './SpeechBubble';
 
 export default function BattleScene() {
   const { currentBossId, setPhase, markBossDefeated, defeatedBosses } = useGameStore();
@@ -34,6 +36,7 @@ export default function BattleScene() {
     setCurrentTurnHero, currentTurnHeroId, turnCount,
     advanceTurn, addCombatLog, addFloatingText, floatingTexts,
     removeFloatingText, advanceBossPhase,
+    momentum, addMomentum, eclipseState, setEclipseState,
   } = useBattleStore();
 
   const [showBossIntro, setShowBossIntro] = useState(true);
@@ -41,7 +44,13 @@ export default function BattleScene() {
   const [shaking, setShaking] = useState(false);
   const [bossAnim, setBossAnim] = useState<SpriteAnimation>('idle');
   const [heroAnims, setHeroAnims] = useState<Record<string, SpriteAnimation>>({});
+  const [heroHurtStates, setHeroHurtStates] = useState<Record<string, boolean>>({});
+  const [bossHurtState, setBossHurtState] = useState(false);
   const [phaseWarning, setPhaseWarning] = useState<string | null>(null);
+  
+  const [speech, setSpeech] = useState<{ text: string, x: number, y: number, color: string } | null>(null);
+
+  const { effects, spawnVFX } = useVFX();
 
   useEffect(() => {
     initBoss(currentBossId);
@@ -59,8 +68,15 @@ export default function BattleScene() {
       }
       // Init all hero anims to idle
       const anims: Record<string, SpriteAnimation> = {};
-      heroes.forEach((h) => { anims[h.id] = 'idle'; });
+      const hurt: Record<string, boolean> = {};
+      heroes.forEach((h) => { 
+        anims[h.id] = 'idle'; 
+        hurt[h.id] = false;
+      });
       setHeroAnims(anims);
+      setHeroHurtStates(hurt);
+      
+      triggerSpeech("Let's end this!", 150, 250, '#c5a059');
     }
   }, [showBossIntro]);
 
@@ -68,6 +84,11 @@ export default function BattleScene() {
     setShaking(true);
     setTimeout(() => setShaking(false), 500);
   }, []);
+
+  const triggerSpeech = (text: string, x: number, y: number, color: string) => {
+    setSpeech({ text, x, y, color });
+    setTimeout(() => setSpeech(null), 3000);
+  };
 
   useEffect(() => {
     if (floatingTexts.length === 0) return;
@@ -145,18 +166,25 @@ export default function BattleScene() {
       if (skill.type === 'buff') {
         addCombatLog({ turn: turnCount, message: `${hero.name} uses ${skill.name}!`, type: 'buff' });
         addFloatingText({ text: skill.name, type: 'heal', x: 200, y: 280 });
+        spawnVFX('buff', 200, 300);
       } else {
         const result = resolveHeroAttack(hero, boss, skill);
 
         // Boss hurt animation
         setBossAnim('hurt');
-        setTimeout(() => setBossAnim('idle'), 600);
+        setBossHurtState(true);
+        setTimeout(() => {
+          setBossAnim('idle');
+          setBossHurtState(false);
+        }, 600);
 
         if (result.isDodged) {
           addCombatLog({ turn: turnCount, message: `${hero.name}'s ${skill.name} missed!`, type: 'miss' });
         } else {
           damageBoss(result.damage);
           if (hero.heroClass === 'warrior') addRage(hero.id, 15);
+          addMomentum(result.isCrit ? 15 : 5);
+          
           addCombatLog({
             turn: turnCount,
             message: `${hero.name} hits ${boss.name} with ${skill.name} for ${result.damage}${result.isCrit ? ' CRIT!' : ''}`,
@@ -164,17 +192,27 @@ export default function BattleScene() {
             value: result.damage,
           });
           if (result.isCrit) triggerShake();
+          
+          // Spawn VFX based on skill/class
+          const vfxType = skill.damageType === 'fire' ? 'fire' : 'slash';
+          spawnVFX(vfxType, result.floatingText.x, result.floatingText.y);
+          spawnVFX('hit', result.floatingText.x, result.floatingText.y);
         }
         addFloatingText(result.floatingText);
 
         const updatedBoss = useBattleStore.getState().boss;
         if (updatedBoss && shouldAdvancePhase(updatedBoss)) {
           advanceBossPhase();
-          const newPhase = updatedBoss.phases[updatedBoss.currentPhase + 1];
+          const newPhase = updatedBoss.phases[updatedBoss.currentPhase];
           if (newPhase) {
             setPhaseWarning(newPhase.name);
             setTimeout(() => setPhaseWarning(null), 2000);
             addCombatLog({ turn: turnCount, message: `${boss.name} enters phase: ${newPhase.name}!`, type: 'phase' });
+            
+            if (newPhase.aura === 'eclipse') {
+              setEclipseState(true);
+              triggerSpeech("Darkness take you!", 600, 200, '#ef4444');
+            }
           }
         }
       }
@@ -200,7 +238,7 @@ export default function BattleScene() {
         }
       }, 600);
     }, 500);
-  }, [boss, isPlayerTurn, isAnimating, heroes, currentTurnHeroId, turnCount]);
+  }, [boss, isPlayerTurn, isAnimating, heroes, currentTurnHeroId, turnCount, spawnVFX, addMomentum]);
 
   const handlePassTurn = useCallback(() => {
     if (!boss || !isPlayerTurn || isAnimating) return;
@@ -215,7 +253,6 @@ export default function BattleScene() {
     if (hero.heroClass === 'mage') spendMp(hero.id, -20);
     if (hero.heroClass === 'warrior') addRage(hero.id, 20);
     if (hero.heroClass === 'archer') {
-      // hack: since we don't have addArrow exported directly, we can use spendArrow with a negative number
       spendArrow(hero.id, -5);
     }
 
@@ -241,6 +278,19 @@ export default function BattleScene() {
     if (!currentBoss || !currentBoss.isAlive) return;
 
     setAnimating(true);
+    
+    // Process Arena Hazards
+    const hazard = getArenaHazard(currentBoss.arena, turnCount);
+    if (hazard) {
+      addCombatLog({ turn: turnCount, message: hazard.message, type: 'system' });
+      if (hazard.target === 'all') {
+        heroes.forEach(h => {
+          if (h.isAlive) damageHero(h.id, hazard.damage);
+        });
+        triggerShake();
+      }
+    }
+
     const skill = pickBossSkill(currentBoss);
 
     // Boss attack animation
@@ -257,18 +307,22 @@ export default function BattleScene() {
         healBoss(healAmount);
         addCombatLog({ turn: turnCount, message: `${currentBoss.name} heals for ${healAmount}!`, type: 'heal', value: healAmount });
         addFloatingText({ text: `+${healAmount}`, type: 'heal', x: 600, y: 180 });
+        spawnVFX('heal', 600, 180);
       } else if (skill.targetAll) {
         aliveHeroes.forEach((hero, i) => {
           const result = resolveBossAttack(currentBoss, hero, skill);
           // Hero hurt animation
           setHeroAnims((prev) => ({ ...prev, [hero.id]: 'hurt' }));
+          setHeroHurtStates((prev) => ({ ...prev, [hero.id]: true }));
           setTimeout(() => {
             setHeroAnims((prev) => ({ ...prev, [hero.id]: 'idle' }));
+            setHeroHurtStates((prev) => ({ ...prev, [hero.id]: false }));
           }, 600);
 
           if (!result.isDodged) {
             damageHero(hero.id, result.damage);
             triggerShake();
+            spawnVFX('hit', 80 + i * 180, 300);
           }
           addFloatingText({ ...result.floatingText, x: 80 + i * 180, y: 300 + Math.random() * 30 });
           addCombatLog({
@@ -284,13 +338,16 @@ export default function BattleScene() {
         const target = aliveHeroes[Math.floor(Math.random() * aliveHeroes.length)];
         const result = resolveBossAttack(currentBoss, target, skill);
         setHeroAnims((prev) => ({ ...prev, [target.id]: 'hurt' }));
+        setHeroHurtStates((prev) => ({ ...prev, [target.id]: true }));
         setTimeout(() => {
           setHeroAnims((prev) => ({ ...prev, [target.id]: 'idle' }));
+          setHeroHurtStates((prev) => ({ ...prev, [target.id]: false }));
         }, 600);
 
         if (!result.isDodged) {
           damageHero(target.id, result.damage);
           triggerShake();
+          spawnVFX('hit', result.floatingText.x, result.floatingText.y);
         }
         addFloatingText(result.floatingText);
         addCombatLog({
@@ -316,7 +373,7 @@ export default function BattleScene() {
         }
       }, 700);
     }, 1000);
-  }, [turnCount]);
+  }, [turnCount, spawnVFX, heroes]);
 
   if (!boss) return null;
 
@@ -336,10 +393,30 @@ export default function BattleScene() {
       </AnimatePresence>
 
       <ArenaParticles arena={boss.arena} />
+      <VFXManager effects={effects} />
+      
+      {speech && <SpeechBubble {...speech} />}
+      
+      {/* Eclipse Overlay */}
+      <AnimatePresence>
+        {eclipseState && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'absolute', inset: 0,
+              background: 'black',
+              zIndex: 2,
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Vignette */}
       <div style={{
-        position: 'absolute', inset: 0, zIndex: 1,
+        position: 'absolute', inset: 0, zIndex: 3,
         background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)',
         pointerEvents: 'none',
       }} />
@@ -373,6 +450,34 @@ export default function BattleScene() {
         zIndex: 10, width: '90%', maxWidth: 700,
       }}>
         <BossHealthBar boss={boss} currentPhase={currentPhase} />
+      </div>
+      
+      {/* Momentum Bar */}
+      <div style={{
+        position: 'absolute', top: 120, left: '50%', transform: 'translateX(-50%)',
+        zIndex: 10, width: 200, height: 8, background: 'rgba(0,0,0,0.5)',
+        borderRadius: 4, border: '1px solid rgba(255,255,255,0.1)',
+        overflow: 'hidden',
+      }}>
+        <motion.div
+          animate={{ width: `${momentum}%` }}
+          style={{
+            height: '100%',
+            background: 'linear-gradient(90deg, #facc15, #eab308)',
+            boxShadow: '0 0 10px #facc15',
+          }}
+        />
+        {momentum >= 100 && (
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 1 }}
+            style={{
+              position: 'absolute', inset: 0,
+              background: 'white',
+              opacity: 0.5,
+            }}
+          />
+        )}
       </div>
 
       {/* Boss sprite */}
@@ -417,6 +522,8 @@ export default function BattleScene() {
               scale={3.5}
               playing={true}
               loop={bossAnim === 'idle'}
+              isHurt={bossHurtState}
+              isAttacking={bossAnim === 'attack'}
               style={{ filter: `drop-shadow(0 20px 20px rgba(0,0,0,0.8))` }}
             />
           )}
@@ -425,13 +532,14 @@ export default function BattleScene() {
 
       {/* Hero sprites */}
       <div style={{
-        position: 'absolute', top: '50%', left: '15%', transform: 'translateY(-50%)',
-        display: 'flex', flexDirection: 'column', gap: 20, zIndex: 5, alignItems: 'center',
+        position: 'absolute', top: '42%', left: '15%', transform: 'translateY(-50%)',
+        display: 'flex', flexDirection: 'column', gap: 10, zIndex: 5, alignItems: 'center',
       }}>
         {heroes.map((hero, index) => {
           const spriteSet = CHARACTER_SPRITES[hero.heroClass];
           const anim = heroAnims[hero.id] || 'idle';
           const isActive = hero.id === currentTurnHeroId && isPlayerTurn;
+          const isHurt = heroHurtStates[hero.id];
           
           // Heroes stacked vertically, stepping forward to the right when active
           return (
@@ -477,6 +585,8 @@ export default function BattleScene() {
                     scale={2} // Uniform scaling for all characters
                     playing={true}
                     loop={anim === 'idle'}
+                    isHurt={isHurt}
+                    isAttacking={anim === 'attack' || anim === 'shoot' || anim === 'cast'}
                     style={{ 
                       opacity: hero.isAlive ? 1 : 0.3,
                       filter: 'drop-shadow(0 10px 10px rgba(0,0,0,0.6))'
@@ -513,7 +623,7 @@ export default function BattleScene() {
       {/* Bottom HUD */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 50 }}>
         <BattleHUD heroes={heroes} currentHeroId={currentTurnHeroId} turnCount={turnCount} isPlayerTurn={isPlayerTurn} />
-        {isPlayerTurn && currentTurnHeroId && (
+        {isPlayerTurn && currentTurnHeroId && heroes.find((h) => h.id === currentTurnHeroId) && (
           <SkillBar
             hero={heroes.find((h) => h.id === currentTurnHeroId)!}
             onUseSkill={handleUseSkill}

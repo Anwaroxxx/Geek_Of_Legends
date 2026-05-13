@@ -107,7 +107,7 @@ export default function VictoryScreen() {
           whileTap={{ scale: 0.97 }}
           onClick={() => { resetBattle(); setPhase('party-creation'); }}
           style={{
-            padding: '14px 50px', background: 'linear-gradient(135deg, #7c4f12 0%, #c5a059 50%, #7c4f12 100%)',
+            padding: '14px 50px', backgroundImage: 'linear-gradient(135deg, #7c4f12 0%, #c5a059 50%, #7c4f12 100%)',
             backgroundSize: '200% 100%', border: 'none', borderRadius: 6,
             fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700,
             color: '#0a0800', letterSpacing: '0.12em', textTransform: 'uppercase',

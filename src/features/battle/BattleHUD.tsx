@@ -1,6 +1,7 @@
 // ============================================
 // BATTLE HUD — Hero status panels (no emojis)
 // ============================================
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { HeroData } from '../../types/Game';
 import { HERO_COLORS, STATUS_ICONS } from '../../constants/balance';
@@ -31,7 +32,7 @@ export default function BattleHUD({ heroes, currentHeroId, turnCount, isPlayerTu
     <div style={{
       display: 'flex', justifyContent: 'center', gap: 8,
       padding: '8px 12px',
-      background: 'linear-gradient(180deg, transparent 0%, rgba(5,3,10,0.95) 30%)',
+      backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(5,3,10,0.95) 30%)',
     }}>
       {heroes.map((hero) => (
         <HeroPanel key={hero.id} hero={hero} isActive={hero.id === currentHeroId && isPlayerTurn} />
@@ -46,6 +47,26 @@ function HeroPanel({ hero, isActive }: { hero: HeroData; isActive: boolean }) {
   const mpPercent = Math.max(0, (hero.stats.mp / hero.stats.maxMp) * 100);
   const spriteSet = CHARACTER_SPRITES[hero.heroClass];
 
+  // HP Drain Effect
+  const [drainPercent, setDrainPercent] = useState(hpPercent);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (drainPercent > hpPercent) {
+        setDrainPercent(Math.max(hpPercent, drainPercent - 0.5));
+      } else if (drainPercent < hpPercent) {
+        setDrainPercent(hpPercent);
+      }
+    }, 20);
+    return () => clearTimeout(timer);
+  }, [hpPercent, drainPercent]);
+
+  // Reactive Sprite Animation
+  const getHeroAnim = () => {
+    if (!hero.isAlive) return 'hurt';
+    if (hero.stats.hp / hero.stats.maxHp < 0.3) return 'hurt';
+    return 'idle';
+  };
+
   const resourceBar = hero.heroClass === 'warrior'
     ? { value: hero.rage ?? 0, max: hero.maxRage ?? 100, color: '#ef4444', label: 'Rage' }
     : hero.heroClass === 'archer'
@@ -54,43 +75,49 @@ function HeroPanel({ hero, isActive }: { hero: HeroData; isActive: boolean }) {
 
   return (
     <motion.div
-      animate={isActive ? { borderColor: color } : { borderColor: 'rgba(42,32,64,0.8)' }}
+      animate={isActive ? { borderColor: color, scale: 1.05 } : { borderColor: 'rgba(42,32,64,0.8)', scale: 1 }}
       style={{
         width: 180, padding: '8px 10px',
-        background: isActive
+        backgroundImage: isActive
           ? `linear-gradient(135deg, ${color}11 0%, rgba(13,10,24,0.95) 100%)`
-          : 'rgba(13,10,24,0.95)',
+          : 'none',
+        backgroundColor: 'rgba(13,10,24,0.95)',
         border: '1px solid rgba(42,32,64,0.8)',
         borderRadius: 8, position: 'relative', overflow: 'hidden',
         opacity: hero.isAlive ? 1 : 0.4,
+        boxShadow: isActive ? `0 0 20px ${color}33` : 'none',
       }}
     >
       {isActive && (
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-          background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
+          backgroundImage: `linear-gradient(90deg, transparent, ${color}, transparent)`,
         }} />
       )}
 
       {/* Hero info with mini sprite */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-        <div style={{
-          width: 32, height: 32, overflow: 'hidden',
-          borderRadius: 4, border: `1px solid ${color}33`,
-          background: 'rgba(0,0,0,0.3)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+        <motion.div 
+          animate={hero.stats.hp / hero.stats.maxHp < 0.3 && hero.isAlive ? { rotate: [-2, 2, -2] } : {}}
+          transition={{ duration: 0.2, repeat: Infinity }}
+          style={{
+            width: 32, height: 32, overflow: 'hidden',
+            borderRadius: 4, border: `1px solid ${color}33`,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
           {spriteSet && (
             <SpriteAnimator
               spriteSet={spriteSet}
-              animation="idle"
+              animation={getHeroAnim()}
               direction="down"
-              scale={hero.heroClass === 'warrior' ? 0.22 : 0.4}
+              scale={hero.heroClass === 'archer' ? 0.4 : 0.22}
               playing={true}
-              style={{ marginTop: hero.heroClass === 'warrior' ? -4 : 0 }}
+              style={{ marginTop: hero.heroClass === 'archer' ? 0 : -4 }}
             />
           )}
-        </div>
+        </motion.div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{
             fontFamily: "'Cinzel', serif", fontSize: '0.7rem', fontWeight: 700,
@@ -114,14 +141,23 @@ function HeroPanel({ hero, isActive }: { hero: HeroData; isActive: boolean }) {
           <span style={{ color: '#4ade80' }}>HP</span>
           <span style={{ color: '#8b7aa8' }}>{hero.stats.hp}/{hero.stats.maxHp}</span>
         </div>
-        <div className="bar-container" style={{ height: 6 }}>
-          <div className="bar-hp">
+        <div className="bar-container" style={{ height: 6, position: 'relative' }}>
+          <div className="bar-hp" style={{ position: 'relative', overflow: 'hidden' }}>
+            {/* Drain layer */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, height: '100%',
+              width: `${drainPercent}%`,
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              transition: 'width 0.8s ease-out',
+            }} />
             <div className="bar-fill" style={{
               width: `${hpPercent}%`,
-              background: hpPercent < 25 ? 'linear-gradient(90deg, #991b1b, #ef4444)'
+              backgroundImage: hpPercent < 25 ? 'linear-gradient(90deg, #991b1b, #ef4444)'
                 : hpPercent < 50 ? 'linear-gradient(90deg, #b45309, #f59e0b)'
                 : 'linear-gradient(90deg, #16a34a, #4ade80)',
               boxShadow: hpPercent < 25 ? '0 0 8px rgba(239,68,68,0.6)' : '0 0 8px rgba(74,222,128,0.4)',
+              position: 'relative',
+              zIndex: 1,
             }} />
           </div>
         </div>
@@ -151,7 +187,7 @@ function HeroPanel({ hero, isActive }: { hero: HeroData; isActive: boolean }) {
             <div>
               <div className="bar-fill" style={{
                 width: `${(resourceBar.value / resourceBar.max) * 100}%`,
-                background: `linear-gradient(90deg, ${resourceBar.color}99, ${resourceBar.color})`,
+                backgroundImage: `linear-gradient(90deg, ${resourceBar.color}99, ${resourceBar.color})`,
                 boxShadow: `0 0 6px ${resourceBar.color}66`,
               }} />
             </div>
@@ -164,7 +200,7 @@ function HeroPanel({ hero, isActive }: { hero: HeroData; isActive: boolean }) {
           {hero.statusEffects.map((eff, i) => (
             <span key={i} style={{
               fontSize: '0.6rem', padding: '1px 4px',
-              background: 'rgba(0,0,0,0.3)', borderRadius: 3,
+              backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: 3,
               border: '1px solid rgba(255,255,255,0.05)',
               color: '#e2d9f3',
             }}>

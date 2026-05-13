@@ -19,6 +19,8 @@ interface BattleState {
   battleActive: boolean;
   waveNumber: number;
   battlePhase: 'wave' | 'elite' | 'boss';
+  momentum: number; // 0-100
+  eclipseState: boolean;
 
   initBoss: (id: BossId) => void;
   damageBoss: (amount: number) => void;
@@ -37,6 +39,8 @@ interface BattleState {
   advanceBossPhase: () => void;
   nextWave: () => void;
   resetBattle: () => void;
+  addMomentum: (amount: number) => void;
+  setEclipseState: (v: boolean) => void;
 }
 
 const BOSS_DATA: Record<BossId, Omit<BossData, 'stats' | 'isAlive' | 'riddleTriggered' | 'statusEffects' | 'currentPhase'>> = {
@@ -61,11 +65,17 @@ const BOSS_DATA: Record<BossId, Omit<BossData, 'stats' | 'isAlive' | 'riddleTrig
         type: 'aoe', damageType: 'fire', baseDamage: 95, mpCost: 0,
         cooldown: 5, currentCooldown: 0, targetAll: true, icon: 'FBR', vfx: 'fire_breath',
       },
+      {
+        id: 'sun_strike', name: 'Eclipse: Sun Strike', description: 'Focused solar energy incinerates a target.',
+        type: 'damage', damageType: 'fire', baseDamage: 180, mpCost: 0,
+        cooldown: 0, currentCooldown: 0, targetAll: false, icon: 'SUN', vfx: 'sun_strike',
+      },
     ],
     phases: [
       { id: 1, name: 'The Awakening', hpThreshold: 1.0, specialAttack: 'flame_slash' },
       { id: 2, name: 'Inferno Rising', hpThreshold: 0.6, specialAttack: 'lava_eruption', enrageMultiplier: 1.3 },
       { id: 3, name: 'Apocalypse', hpThreshold: 0.3, specialAttack: 'fire_breath', aura: 'fire', enrageMultiplier: 1.6 },
+      { id: 4, name: 'Solar Flare', hpThreshold: 0.1, specialAttack: 'sun_strike', aura: 'eclipse', enrageMultiplier: 2.0 },
     ],
     portrait: 'sauron',
     arena: 'lava_temple',
@@ -91,11 +101,18 @@ const BOSS_DATA: Record<BossId, Omit<BossData, 'stats' | 'isAlive' | 'riddleTrig
         type: 'heal', damageType: 'arcane', baseDamage: 0, mpCost: 0,
         cooldown: 5, currentCooldown: 0, targetAll: false, icon: 'RWD', vfx: 'rewind',
       },
+      {
+        id: 'time_stop', name: 'Eclipse: Time Stop', description: 'Stops time for all heroes.',
+        type: 'debuff', damageType: 'arcane', baseDamage: 100, mpCost: 0,
+        cooldown: 0, currentCooldown: 0, targetAll: true, statusEffect: 'stun', statusDuration: 1, statusValue: 0,
+        icon: 'STP', vfx: 'time_stop',
+      },
     ],
     phases: [
       { id: 1, name: 'Time Begins', hpThreshold: 1.0, specialAttack: 'time_strike' },
       { id: 2, name: 'Temporal Shift', hpThreshold: 0.5, specialAttack: 'temporal_freeze', enrageMultiplier: 1.4 },
       { id: 3, name: 'End of Time', hpThreshold: 0.25, specialAttack: 'rewind', aura: 'time', enrageMultiplier: 1.7 },
+      { id: 4, name: 'The Void', hpThreshold: 0.05, specialAttack: 'time_stop', aura: 'eclipse', enrageMultiplier: 2.5 },
     ],
     portrait: 'chronos',
     arena: 'clock_temple',
@@ -121,11 +138,17 @@ const BOSS_DATA: Record<BossId, Omit<BossData, 'stats' | 'isAlive' | 'riddleTrig
         type: 'aoe', damageType: 'shadow', baseDamage: 70, mpCost: 0,
         cooldown: 4, currentCooldown: 0, targetAll: true, icon: 'DRK', vfx: 'darkness_wave',
       },
+      {
+        id: 'abyss_stare', name: 'Eclipse: Abyss Stare', description: 'Lilith stares into your soul, dealing massive true damage.',
+        type: 'damage', damageType: 'true', baseDamage: 250, mpCost: 0,
+        cooldown: 0, currentCooldown: 0, targetAll: false, icon: 'ABY', vfx: 'abyss_stare',
+      },
     ],
     phases: [
       { id: 1, name: 'The Whisper', hpThreshold: 1.0, specialAttack: 'shadow_bolt' },
       { id: 2, name: 'Nightmare', hpThreshold: 0.55, specialAttack: 'charm', enrageMultiplier: 1.3 },
       { id: 3, name: 'Void Collapse', hpThreshold: 0.2, specialAttack: 'darkness_wave', aura: 'shadow', enrageMultiplier: 1.8 },
+      { id: 4, name: 'Eternal Night', hpThreshold: 0.08, specialAttack: 'abyss_stare', aura: 'eclipse', enrageMultiplier: 2.2 },
     ],
     portrait: 'lilith',
     arena: 'void_palace',
@@ -145,6 +168,8 @@ export const useBattleStore = create<BattleState>((set) => ({
   battleActive: false,
   waveNumber: 1,
   battlePhase: 'wave',
+  momentum: 0,
+  eclipseState: false,
 
   initBoss: (id) => {
     const template = BOSS_DATA[id];
@@ -157,7 +182,7 @@ export const useBattleStore = create<BattleState>((set) => ({
       statusEffects: [],
       currentPhase: 0,
     };
-    set({ boss, turnCount: 0, combatLog: [], floatingTexts: [], battleActive: true, isPlayerTurn: true, isBossTurn: false });
+    set({ boss, turnCount: 0, combatLog: [], floatingTexts: [], battleActive: true, isPlayerTurn: true, isBossTurn: false, momentum: 0, eclipseState: false });
   },
 
   damageBoss: (amount) => set((s) => {
@@ -225,5 +250,13 @@ export const useBattleStore = create<BattleState>((set) => ({
     battleActive: false,
     waveNumber: 1,
     battlePhase: 'wave',
+    momentum: 0,
+    eclipseState: false,
   }),
+
+  addMomentum: (amount) => set((s) => ({
+    momentum: Math.min(100, Math.max(0, s.momentum + amount))
+  })),
+
+  setEclipseState: (v) => set({ eclipseState: v }),
 }));
